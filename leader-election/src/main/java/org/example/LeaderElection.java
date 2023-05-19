@@ -29,6 +29,9 @@ public class LeaderElection implements Watcher {
         System.out.println("Disconnected from Zookeeper, exiting application");
     }
 
+    /*
+    * Node volunteering for leadership by creating a znode
+    * */
     public void volunteerForLeadership() throws InterruptedException, KeeperException {
         String znodePrefix = ELECTION_NAMESPACE; // c stands for candidate
         // path, data, access control list(acl), create mode
@@ -38,6 +41,10 @@ public class LeaderElection implements Watcher {
         this.currentZnodeName = znodeFullPath.replace(ELECTION_NAMESPACE, "");
     }
 
+    /*
+    * Electing the leader based on the znodes created by the candidates.
+    * Leader is determined based on the smallest znode name.
+    * */
     public void electLeader() throws InterruptedException, KeeperException {
         List<String> children = zooKeeper.getChildren(ELECTION_NAMESPACE, false);
         Collections.sort(children);
